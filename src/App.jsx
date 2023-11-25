@@ -3,7 +3,6 @@ import AccessAlarmIcon from '@mui/icons-material/AccessAlarm'
 import ThreeDRotation from '@mui/icons-material/ThreeDRotation'
 import HomeIcon from '@mui/icons-material/Home'
 import { pink } from '@mui/material/colors'
-import Typography from '@mui/material/Typography'
 import { useColorScheme } from '@mui/material/styles'
 
 function ModeToggle() {
@@ -22,14 +21,14 @@ function ModeToggle() {
 function App() {
   return (
     <>
-      <ModeToggle />
-      <div className='luongTran'>luongtrandev</div>
-      <Button variant='contained' color='error'>Hello world</Button>
-      <Button variant='text'>Text</Button>
-      <Button variant='outlined'>Outlined</Button>
-      <br />
-      <AccessAlarmIcon />
-      <ThreeDRotation />
+      <ModeToggle/>
+      <div className="luongTran">luongtrandev</div>
+      <Button variant="contained">Hello world</Button>
+      <Button variant="text">Text</Button>
+      <Button variant="outlined">Outlined</Button>
+      <br/>
+      <AccessAlarmIcon/>
+      <ThreeDRotation/>
       <HomeIcon />
       <HomeIcon color='primary' />
       <HomeIcon color='secondary' />
