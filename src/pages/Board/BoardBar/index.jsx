@@ -13,13 +13,13 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'
 
 function BoardBar() {
   const MENU_STYLES = {
-    color:'primary.main',
-    background:'white',
+    color:'white',
+    background:'transparent',
     border:'none',
     padding:'5px',
     borderRadius:'4px',
     '& .MuiSvgIcon-root':{
-      color:'primary.main'
+      color:'white'
     },
     '&:hover':{
       bgcolor:'primary.50'
@@ -35,7 +35,10 @@ function BoardBar() {
         alignItems:'center',
         justifyContent:'space-between',
         overflowX:'auto',
-        borderTop:'1px solid #00bfa5'
+        borderBottom:'1px solid white',
+        bgcolor:(theme) => (
+          theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'
+        )
       }}>
         <Box sx={{
           display:'flex',
@@ -79,14 +82,29 @@ function BoardBar() {
           alignItems:'center',
           gap:1
         }}>
-          <Button variant="outlined" startIcon={<PersonAddIcon/>}>Invite</Button>
-          <AvatarGroup max={4} sx={{
-            '& .MuiAvatar-root':{
-              height:32,
-              width:32,
-              fontSize:16
-            }
-          }}>
+          <Button
+            sx={{
+              color:'white',
+              borderColor:'white',
+              '&:hover':{
+                borderColor:'white'
+              }
+            }}
+            variant="outlined"
+            startIcon={<PersonAddIcon/>}>
+            Invite
+          </Button>
+          <AvatarGroup
+            max={4}
+            sx={{
+              gap:'10px',
+              '& .MuiAvatar-root':{
+                height:32,
+                width:32,
+                fontSize:16,
+                border:'none'
+              }
+            }}>
             <Tooltip title='LuongTranDev'>
               <Avatar
                 alt="LuongTranDev"
