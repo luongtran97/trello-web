@@ -38,7 +38,9 @@ function BoardBar() {
         borderBottom:'1px solid white',
         bgcolor:(theme) => (
           theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'
-        )
+        ),
+        '&::-webkit-scrollbar-track':{
+          m:2 }
       }}>
         <Box sx={{
           display:'flex',
@@ -102,7 +104,12 @@ function BoardBar() {
                 height:32,
                 width:32,
                 fontSize:16,
-                border:'none'
+                border:'none',
+                color:'white',
+                cursor:'pointer',
+                '&:first-of-type':{
+                  bgcolor:'#a4b0be'
+                }
               }
             }}>
             <Tooltip title='LuongTranDev'>
