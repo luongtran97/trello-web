@@ -10,8 +10,9 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import { upperCaseString } from '~/utils/formatters'
 
-function BoardBar() {
+function BoardBar({ board }) {
   const MENU_STYLES = {
     color:'white',
     background:'transparent',
@@ -49,13 +50,13 @@ function BoardBar() {
           <Chip
             sx={MENU_STYLES}
             icon={<DashboardIcon />}
-            label="LuongTranDev"
+            label={board?.title}
             clickable
           />
           <Chip
             sx={MENU_STYLES}
             icon={<VpnLockIcon />}
-            label="Public/Private Workspace"
+            label={upperCaseString(board?.type)}
             clickable
           />
           <Chip

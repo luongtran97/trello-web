@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import Cloumn from './Columns/Cloumn'
 import Button from '@mui/material/Button'
 import NoteAddIcon from '@mui/icons-material/NoteAdd'
-function ListColumns() {
+function ListColumns({ columns }) {
 
 
   return (
@@ -20,12 +20,7 @@ function ListColumns() {
         }
       }}>
         {/* box columns */}
-        <Cloumn/>
-        <Cloumn/>
-        <Cloumn/>
-        <Cloumn/>
-        <Cloumn/>
-        <Cloumn/>
+        {columns?.map(column => (<Cloumn column={column} key={column._id}/>))}
         {/* box add new column */}
         <Box sx={{
           minWidth:'200px',

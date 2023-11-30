@@ -17,9 +17,13 @@ import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCards from './ListCards/ListCards'
+import { mapOrder } from '~/utils/sort'
 
 
-function Cloumn() {
+function Cloumn({ column }) {
+
+  const oderedCard = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -53,7 +57,7 @@ function Cloumn() {
             fontSize:'1rem',
             fontWeight:'bold',
             cursor:'pointer'
-          }}>Column Title</Typography>
+          }}>{column?.title}</Typography>
           <Box>
             <Tooltip title='More options'>
               <ExpandMoreIcon sx={{
@@ -106,7 +110,7 @@ function Cloumn() {
         </Box>
 
         {/* box column content */}
-        <ListCards/>
+        <ListCards cards={ oderedCard}/>
 
         {/* box column footer */}
         <Box sx={{
