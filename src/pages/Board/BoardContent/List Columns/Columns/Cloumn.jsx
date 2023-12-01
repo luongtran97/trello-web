@@ -27,13 +27,16 @@ function Cloumn({ column }) {
     listeners,
     setNodeRef,
     transform,
-    transition
-  } = useSortable({ id: column._id, data:{ ...column } })
+    transition,
+    isDragging
+  } = useSortable({ id: column._id, data: { ...column } })
 
-  const dndKitColumnStyle = {
+  const dndKitCardStyle = {
     // touchAction:'none', //dành cho sensor dạng default
     transform: CSS.Translate.toString(transform),
-    transition
+    transition,
+    height:'100%',
+    opacity: isDragging ? 0.5 : undefined
   }
 
   const oderedCard = mapOrder(column?.cards, column?.cardOrderIds, '_id')
@@ -47,41 +50,42 @@ function Cloumn({ column }) {
     setAnchorEl(null)
   }
   return (
-    <div>
+    <div
+      ref={setNodeRef}
+      style={dndKitCardStyle}
+      {...attributes}
+    >
       <Box
-        ref={setNodeRef}
-        style={dndKitColumnStyle}
-        {...attributes}
         {...listeners}
         sx={{
-          minWidth:'300px',
-          maxWidth:'300px',
-          bgcolor:(theme) => ( theme.palette.mode === 'dark' ? '#333643' : '#ebecf0' ),
-          ml:2,
-          borderRadius:'6px',
-          height:'fit-content',
-          maxHeight:(theme) =>
+          minWidth: '300px',
+          maxWidth: '300px',
+          bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0'),
+          ml: 2,
+          borderRadius: '6px',
+          height: 'fit-content',
+          maxHeight: (theme) =>
             `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
         }}>
 
         {/* box column header */}
         <Box sx={{
-          height:(theme) => { theme.trello.columnHeaderHeight },
-          p:2,
-          display:'flex',
-          alignItems:'center',
-          justifyContent:'space-between'
+          height: (theme) => { theme.trello.columnHeaderHeight },
+          p: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
           <Typography variant='h6' sx={{
-            fontSize:'1rem',
-            fontWeight:'bold',
-            cursor:'pointer'
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            cursor: 'pointer'
           }}>{column?.title}</Typography>
           <Box>
             <Tooltip title='More options'>
               <ExpandMoreIcon sx={{
-                color:'text.primary',
-                cursor:'pointer'
+                color: 'text.primary',
+                cursor: 'pointer'
               }}
               id="basic-column-dropdown"
               aria-controls={open ? 'basic-menu-column-dropdown' : undefined}
@@ -129,21 +133,21 @@ function Cloumn({ column }) {
         </Box>
 
         {/* box column content */}
-        <ListCards cards={ oderedCard}/>
+        <ListCards cards={oderedCard} />
 
         {/* box column footer */}
         <Box sx={{
-          height:(theme) => { theme.trello.columnFooterHeight},
-          p:2,
-          display:'flex',
-          alignItems:'center',
-          justifyContent:'space-between'
+          height: (theme) => { theme.trello.columnFooterHeight },
+          p: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
-          <Button startIcon={<AddCardIcon/>}>Add new card</Button>
+          <Button startIcon={<AddCardIcon />}>Add new card</Button>
           <Tooltip title='Drag to nmove'>
             <DragHandleIcon sx={{
-              cursor:'pointer'
-            }}/>
+              cursor: 'pointer'
+            }} />
           </Tooltip>
         </Box>
 
