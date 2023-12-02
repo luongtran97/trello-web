@@ -43,6 +43,69 @@ function BoardContent({ board }) {
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
   }, [board])
 
+  //  cập nhật state trong trường hợp di chuyển Card giữa các column khác nhau
+  const moveCardBetweenDifferentColumns = (
+    overColumn,
+    overCardId,
+    active,
+    over,
+    activeColumn,
+    activeDraggingCardId,
+    activeDraggingCardData
+  ) => {
+    setOrderedColumns(prevColumns => {
+      // Tìm vị trí index của cái overCard trong column đích (nơi card sắp dược thả)
+      const overCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
+
+      // logic tính toán "card index mới" (trên hoặc dưới overcard) lấy chuẩn ra từ code của thư viện
+      let newCardIndex
+
+      const isBelowOverItem =
+      active.rect.current.translated &&
+      active.rect.current.translated.top >
+      over.rect.top + over.rect.height
+
+      const modifier = isBelowOverItem ? 1 : 0
+
+      newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length +1
+
+      // Clone mảng orderedColumnsState cũ ra một mảng mới để xứ lý data rồi > return - cập nhật lại orderedColumnsState mới
+      const nextColumns = cloneDeep(prevColumns)
+
+      const nextActiveColumn = nextColumns.find(column => column._id === activeColumn._id)
+
+      const nextOverColumn = nextColumns.find(column => column._id === overColumn._id)
+
+      // colum cũ
+      if (nextActiveColumn) {
+        // xóa card ở column active (có thể hiêu là column cũ , lúc kéo sang column mới cần xóa nó đi)
+        nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
+
+        // cập nhật lại mảng cardOrderIds
+        nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map((card) => card._id)
+      }
+
+      //colum mới
+      if (nextOverColumn) {
+        // kiểm tra xem card đang kéo có tồn tại ở trong overColumn chưa, nếu có thì cần xóa nó trước
+        nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
+
+        // đối với trường hợp dragEnd thì phải cập nhật lại chuẩn dữ liệu columnId trong card sau khi kéo card giữa 2 column khác nhau
+        const rebuilt_activeDraggingCardData = {
+          ...activeDraggingCardData,
+          columnId:nextOverColumn._id
+        }
+        // tiếp theo thêm cái card đang kéo vào overColumn theo vị trí index mới
+        nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, rebuilt_activeDraggingCardData)
+
+        // cập nhật lại mảng cardOrderIds
+        nextOverColumn.cardOrderIds = nextOverColumn.cards.map((card) => card._id)
+
+      }
+
+      return nextColumns
+    })
+  }
   // Tìm một column cardId
   const findColumnByCardId= ( cardId ) => {
     return orderedColumns.find(column => column?.cards?.map( card => card._id )?.includes(cardId))
@@ -86,53 +149,13 @@ function BoardContent({ board }) {
     // xử lý logic ở đây chỉ khi 2 colum khác nhau, còn nếu kéo card trong chính column ban đầu của nó thì không làm gì
     // vì đây đang là đoạn xử lý kéo (handelDragOver), còn xử lý kéo xong thì nó lại là vấn để ở handelDragEnd
     if (activeColumn._id !== overColumn._id) {
-      setOrderedColumns(prevColumns => {
-        // Tìm vị trí index của cái overCard trong column đích (nơi card sắp dược thả)
-        const overCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
-
-        // logic tính toán "card index mới" (trên hoặc dưới overcard) lấy chuẩn ra từ code của thư viện
-        let newCardIndex
-
-        const isBelowOverItem =
-        active.rect.current.translated &&
-        active.rect.current.translated.top >
-        over.rect.top + over.rect.height
-
-        const modifier = isBelowOverItem ? 1 : 0
-
-        newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length +1
-
-        // Clone mảng orderedColumnsState cũ ra một mảng mới để xứ lý data rồi > return - cập nhật lại orderedColumnsState mới
-        const nextColumns = cloneDeep(prevColumns)
-
-        const nextActiveColumn = nextColumns.find(column => column._id === activeColumn._id)
-
-        const nextOverColumn = nextColumns.find(column => column._id === overColumn._id)
-
-        // colum cũ
-        if (nextActiveColumn) {
-          // xóa card ở column active (có thể hiêu là column cũ , lúc kéo sang column mới cần xóa nó đi)
-          nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
-
-          // cập nhật lại mảng cardOrderIds
-          nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map((card) => card._id)
-        }
-
-        //colum mới
-        if (nextOverColumn) {
-          // kiểm tra xem card đang kéo có tồn tại ở trong overColumn chưa, nếu có thì cần xóa nó trước
-          nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
-
-          // tiếp theo thêm cái card đang kéo vào overColumn theo vị trí index mới
-          nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, activeDraggingCardData)
-
-          // cập nhật lại mảng cardOrderIds
-          nextOverColumn.cardOrderIds = nextOverColumn.cards.map((card) => card._id)
-
-        }
-
-        return nextColumns
-      })
+      moveCardBetweenDifferentColumns(overColumn,
+        overCardId,
+        active,
+        over,
+        activeColumn,
+        activeDraggingCardId,
+        activeDraggingCardData)
     }
   }
 
@@ -161,6 +184,13 @@ function BoardContent({ board }) {
       // phải dùng tới activeDragItemData (set vào state oldColumn ) không dùng activeData handelDragEnd bởi vì khi đi qua dragOver state đã bị cập nhật lại rồi
       if (oldClumn._id !== overColumn._id) {
         // xử lý kéo thả card khác column
+        moveCardBetweenDifferentColumns(overColumn,
+          overCardId,
+          active,
+          over,
+          activeColumn,
+          activeDraggingCardId,
+          activeDraggingCardData)
       } else {
         // xử lý hành động kéo thả card trong cùng 1 column
 
