@@ -8,7 +8,8 @@ import {
   useSensors,
   MouseSensor,
   TouchSensor,
-  DragOverlay
+  DragOverlay,
+  closestCorners
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import Cloumn from './List Columns/Columns/Cloumn'
@@ -143,13 +144,13 @@ function BoardContent({ board }) {
         if (nextOverColumn) {
           // kiểm tra xem card đang kéo có tồn tại ở trong overColumn chưa, nếu có thì cần xóa nó trước
           nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
-          
+
           // tiếp theo thêm cái card đang kéo vào overColumn theo vị trí index mới
           nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, activeDraggingCardData)
-          
+
           // cập nhật lại mảng cardOrderIds
           nextOverColumn.cardOrderIds = nextOverColumn.cards.map((card) => card._id)
-          console.log('🚀 ~ nextOverColumn:', nextOverColumn)
+
         }
 
         return nextColumns
@@ -161,7 +162,11 @@ function BoardContent({ board }) {
       onDragStart={handelDragStart}
       onDragOver={handelDragOver}
       onDragEnd={handelDragEnd}
-      sensors={sensor}>
+      sensors={sensor}
+      // sử dụng thuật toán collision detction algorithsm để phát hiện va chạm
+      // https://docs.dndkit.com/api-documentation/context-provider/collision-detection-algorithms
+      collisionDetection={closestCorners}
+    >
       <Box sx={{
         bgcolor:(theme) => ( theme.palette.mode === 'dark' ? '#34495e' : '#1976d2' ),
         width:'100%',
