@@ -16,8 +16,8 @@ import {
 import { arrayMove } from '@dnd-kit/sortable'
 import Cloumn from './List Columns/Columns/Cloumn'
 import TrelloCard from './List Columns/Columns/ListCards/Card/TrelloCard'
-import { cloneDeep } from 'lodash'
-
+import { cloneDeep, isEmpty } from 'lodash'
+import { generatePlaceHolderCard } from '~/utils/formatters'
 const ACTIVE_DRAG_ITEM_STYLE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_STYLE_COLUMN',
   CARD:'ACTIVE_DRAG_ITEM_STYLE_CARD'
@@ -84,6 +84,11 @@ function BoardContent({ board }) {
       if (nextActiveColumn) {
         // xóa card ở column active (có thể hiêu là column cũ , lúc kéo sang column mới cần xóa nó đi)
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
+
+        // thêm placeholder card nếu column bị rỗng
+        if (isEmpty(nextActiveColumn.cards)) {
+          nextActiveColumn.cards = [generatePlaceHolderCard(nextActiveColumn)]
+        }
 
         // cập nhật lại mảng cardOrderIds
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map((card) => card._id)
