@@ -21,7 +21,7 @@ export const mockData = {
             columnId: 'column-id-01',
             title: 'Title of card 01',
             description: 'Markdown Syntax (sẽ ở khóa nâng cao nhé)',
-            cover: 'https://scontent.fsgn21-1.fna.fbcdn.net/v/t39.30808-6/404687869_122114215046102196_7928916660713104127_n.jpg?stp=dst-jpg_p180x540&_nc_cat=102&ccb=1-7&_nc_sid=c42490&_nc_ohc=0xpQ5Q4sh6EAX-RFku5&_nc_ht=scontent.fsgn21-1.fna&oh=00_AfBgbN_4QK--ogh8ejlD6lU_Da_wLFTSnE_We3P52S7k5g&oe=656B6C0B',
+            cover: 'https://media.vanityfair.com/photos/575db4d923ec979410fd49a9/master/pass/t-now-you-see-me-2-poster.jpg',
             memberIds: ['test-user-id-01'],
             comments: ['test comment 01', 'test comment 02'],
             attachments: ['test attachment 01', 'test attachment 02', 'test attachment 03']
