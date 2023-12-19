@@ -88,9 +88,11 @@ function AppBar() {
                   <SearchIcon sx={{ color:'white' }}/>
                 </InputAdornment>,
               endAdornment:
+              <InputAdornment position='end'>
                 <ClearIcon onClick = { () => {
                   setSearchValue('')
                 } } fontSize='small' sx={{ color: searchValue ? 'white' : 'transparent', cursor:'pointer' }}/>
+              </InputAdornment>
             }}
             sx={{
               minWidth:120,
