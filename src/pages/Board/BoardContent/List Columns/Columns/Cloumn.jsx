@@ -188,6 +188,7 @@ function Cloumn({ column, handelcreateNewCard }) {
                 label="Enter Card Title ..."
                 size='small'
                 type="text"
+                data-no-dnd='true'
                 variant='outlined'
                 autoFocu
                 value={newCardTitle}
@@ -222,6 +223,7 @@ function Cloumn({ column, handelcreateNewCard }) {
                 }} />
               <Box sx={{ display:'flex', alignItems:'center', gap:1 }}>
                 <Button
+                  data-no-dnd='true'
                   onClick={addNewCard}
                   variant='contained' color='success' size='small'
                   sx={{

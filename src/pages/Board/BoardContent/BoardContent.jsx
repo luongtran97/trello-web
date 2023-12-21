@@ -6,8 +6,8 @@ import {
   DndContext,
   useSensor,
   useSensors,
-  MouseSensor,
-  TouchSensor,
+  // MouseSensor,
+  // TouchSensor,
   DragOverlay,
   closestCorners,
   pointerWithin,
@@ -18,6 +18,7 @@ import Cloumn from './List Columns/Columns/Cloumn'
 import TrelloCard from './List Columns/Columns/ListCards/Card/TrelloCard'
 import { cloneDeep, isEmpty } from 'lodash'
 import { generatePlaceHolderCard } from '~/utils/formatters'
+import { MouseSensor, TouchSensor } from '~/customLibraries/dndKitSensors'
 const ACTIVE_DRAG_ITEM_STYLE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_STYLE_COLUMN',
   CARD:'ACTIVE_DRAG_ITEM_STYLE_CARD'
