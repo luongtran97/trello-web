@@ -8,20 +8,21 @@ import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortabl
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
-function ListColumns({ columns }) {
+function ListColumns({ columns, handelAddNewColumn, handelcreateNewCard }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState('')
   const toggleOpenNewColumnForm = () => {
     setOpenNewColumnForm(!openNewColumnForm)
   }
 
-  const addNewColumn = () => {
+  const addNewColumn = async() => {
     if (!newColumnTitle) {
       toast.error('please enter column title!')
       return
     }
-    // gọi api
 
+    await handelAddNewColumn(newColumnTitle)
+    // gọi api
     //đóng trạng thái input & clear input
     toggleOpenNewColumnForm()
     setNewColumnTitle('')
@@ -40,7 +41,7 @@ function ListColumns({ columns }) {
         }
       }}>
         {/* box columns */}
-        {columns?.map(column => (<Cloumn column={column} key={column._id}/>))}
+        {columns?.map(column => (<Cloumn column={column} key={column._id} handelcreateNewCard={handelcreateNewCard}/>))}
         {/* box add new column */}
         {!openNewColumnForm
           ? <Box onClick={toggleOpenNewColumnForm} sx={{

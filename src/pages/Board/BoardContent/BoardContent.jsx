@@ -23,7 +23,7 @@ const ACTIVE_DRAG_ITEM_STYLE = {
   CARD:'ACTIVE_DRAG_ITEM_STYLE_CARD'
 }
 
-function BoardContent({ board }) {
+function BoardContent({ board, handelAddNewColumn, handelcreateNewCard }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint:{ distance:10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint:{ distance:10 } })
 
@@ -305,7 +305,11 @@ function BoardContent({ board }) {
         },
         p:'10px 0'
       }}>
-        <ListColumns columns={orderedColumns} />
+        <ListColumns
+          columns={orderedColumns}
+          handelAddNewColumn={handelAddNewColumn}
+          handelcreateNewCard={handelcreateNewCard}
+        />
         <DragOverlay dropAnimation={{
           duration: 500,
           easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)' }}>
@@ -314,7 +318,6 @@ function BoardContent({ board }) {
           { activeDragItemType === ACTIVE_DRAG_ITEM_STYLE.CARD && <TrelloCard card={activeDragItemData}/>}
         </DragOverlay>
       </Box>
-
     </DndContext>
   )
 }

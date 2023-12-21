@@ -23,7 +23,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
-function Cloumn({ column }) {
+function Cloumn({ column, handelcreateNewCard }) {
   const {
     attributes,
     listeners,
@@ -55,8 +55,12 @@ function Cloumn({ column }) {
       })
       return
     }
+    const newCardData = {
+      title: newCardTitle,
+      columnId:column._id
+    }
     // gọi api
-
+    handelcreateNewCard(newCardData)
     //đóng trạng thái input & clear input
     toggleOpenNewCardForm()
     setNewCardTitle('')
