@@ -18,13 +18,13 @@ import Cloumn from './List Columns/Columns/Cloumn'
 import TrelloCard from './List Columns/Columns/ListCards/Card/TrelloCard'
 import { cloneDeep, isEmpty } from 'lodash'
 import { generatePlaceHolderCard } from '~/utils/formatters'
-import { MouseSensor, TouchSensor } from '~/customLibraries/dndKitSensors'
+import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensors'
 const ACTIVE_DRAG_ITEM_STYLE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_STYLE_COLUMN',
   CARD:'ACTIVE_DRAG_ITEM_STYLE_CARD'
 }
 
-function BoardContent({ board, handelAddNewColumn, handelcreateNewCard }) {
+function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMoveColumn }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint:{ distance:10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint:{ distance:10 } })
 
@@ -243,6 +243,9 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard }) {
         const newColumnIndex = orderedColumns.findIndex(c => c._id === over.id)
         // dùng array move của thằng dnd-kit để sắp xếp lại mảng columns ban đầu
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
+        //gọi lên props function handelMoveColumn nằm ở component cha cao nhất
+        handelMoveColumn(dndOrderedColumns)
+        // vẫn gọi set state ở đây để tránh delay hoặc fickering giao diện lúc kéo thả
         setOrderedColumns(dndOrderedColumns)
       }
     }

@@ -6,11 +6,12 @@ import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 // import { mockData } from '~/apis/moc-data'
 import { fetchBoardDetailsAPI } from '~/apis'
-import { createNewColumAPI, createNewCardAPI } from '~/apis'
+import { createNewColumAPI, createNewCardAPI, updateBoardDetailsAPI } from '~/apis'
 import { generatePlaceHolderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 function Board() {
   const [board, setBoard] = useState(null)
+  console.log('🚀 ~ board:', board)
 
   useEffect(() => {
     const boardId = '6580f73fea92d11a4fd72e72'
@@ -56,6 +57,21 @@ function Board() {
     }
     setBoard(newBoard)
   }
+
+
+  // gọi API và xử lý khi kéo thả Column
+  const handelMoveColumn = async (dndOrderedColumns) => {
+    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumnsIds
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    // setBoard(newBoard)
+    await updateBoardDetailsAPI(board._id, {
+      columnOrderIds: newBoard.columnOrderIds
+    })
+    // setBoard(newBoard)
+
+  }
   return (
     <Container maxWidth={false} disableGutters sx={{ height:'100vh' }}>
       <AppBar/>
@@ -64,6 +80,7 @@ function Board() {
         board={board}
         handelAddNewColumn={handelAddNewColumn}
         handelcreateNewCard={handelcreateNewCard}
+        handelMoveColumn={handelMoveColumn}
       />
     </Container>
   )
