@@ -23,7 +23,14 @@ const ACTIVE_DRAG_ITEM_STYLE = {
   CARD:'ACTIVE_DRAG_ITEM_STYLE_CARD'
 }
 
-function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMoveColumn, handelMoveCardInTheSameColumn }) {
+function BoardContent({
+  board,
+  handelAddNewColumn,
+  handelcreateNewCard,
+  handelMoveColumn,
+  handelMoveCardInTheSameColumn,
+  handelMoveCardToDifferentColumn
+}) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint:{ distance:10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint:{ distance:10 } })
 
@@ -56,7 +63,8 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMo
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerForm
   ) => {
     setOrderedColumns(prevColumns => {
       // Tìm vị trí index của cái overCard trong column đích (nơi card sắp dược thả)
@@ -115,7 +123,11 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMo
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map((card) => card._id)
 
       }
-
+      // nếu func này được gọi từ handelDragEnd nghĩa là đã kéo thả xong thì xử lý gọi API
+      if (triggerForm === 'handelDragEnd') {
+        // phải dùng tới activeDragItemData.columnId hoặc tốt nhất là oldColumn._id set vào state từ bước handelDragStart chứ không phải activeData trong scope handelDragEnd này vì sau khi đi qua onDragOver và tới bước dragEnd thì state đã bị cập nhật qua mấy lần không còn chuẩn
+        handelMoveCardToDifferentColumn(activeDraggingCardId, oldClumn._id, nextOverColumn._id, nextColumns )
+      }
       return nextColumns
     })
   }
@@ -168,7 +180,9 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMo
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData)
+        activeDraggingCardData,
+        'handelDragOver'
+      )
     }
   }
 
@@ -203,7 +217,9 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMo
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData)
+          activeDraggingCardData,
+          'handelDragEnd'
+        )
       } else {
         // xử lý hành động kéo thả card trong cùng 1 column
 

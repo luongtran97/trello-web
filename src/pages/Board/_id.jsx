@@ -13,7 +13,8 @@ import {
   createNewColumAPI,
   createNewCardAPI,
   updateBoardDetailsAPI,
-  updateColumnDetailsAPI
+  updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI
 } from '~/apis'
 import { generatePlaceHolderCard } from '~/utils/formatters'
 import Typography from '@mui/material/Typography'
@@ -97,6 +98,30 @@ function Board() {
     // gọi api update column
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
   }
+  // gọi api xử lý move card khác column
+  /**
+   * khi di chuyển card sang column khác
+   * B1: cập nhật mảng cardOrderIds của column ban đầu chứa nó ( xóa _id của card hiện tại ra khỏi column chứa nó )
+   * B2: cập nhật lại mảng cardOrderIds của column được chuyển đén ( thêm _id card đang di chuyển vào mảng card được kéo đến)
+   * B3: cập nhật lại trường columnId mới của cái card đã kéo
+   * => làm API hỗ trợ riêng
+   */
+  const handelMoveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumnsIds
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    // setBoard(newBoard)
+    // gọi API xử lý backend
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
+    })
+  }
+
   if ( !board ) {
     return (
       <Box sx={{
@@ -123,6 +148,7 @@ function Board() {
         handelcreateNewCard={handelcreateNewCard}
         handelMoveColumn={handelMoveColumn}
         handelMoveCardInTheSameColumn={handelMoveCardInTheSameColumn}
+        handelMoveCardToDifferentColumn= {handelMoveCardToDifferentColumn}
       />
     </Container>
   )
