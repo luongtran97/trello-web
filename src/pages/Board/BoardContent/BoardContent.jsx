@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import ListColumns from './List Columns/ListColumns'
-import { mapOrder } from '~/utils/sort'
 import {
   DndContext,
   useSensor,
@@ -24,7 +23,7 @@ const ACTIVE_DRAG_ITEM_STYLE = {
   CARD:'ACTIVE_DRAG_ITEM_STYLE_CARD'
 }
 
-function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMoveColumn }) {
+function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMoveColumn, handelMoveCardInTheSameColumn }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint:{ distance:10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint:{ distance:10 } })
 
@@ -43,7 +42,8 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMo
   const [oldClumn, setOldColumn] = useState(null)
 
   useEffect(() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    // columns đã được sắp xếp ở component cha
+    setOrderedColumns(board.columns)
   }, [board])
 
   // điểm va chạm cuối cùng xử lý thuật toán phát hiện va chạm cuối cùng trước đó
@@ -214,6 +214,7 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMo
         // dùng arrayMove kéo card trong một cái column tương tự với logic kéo column trong boardContent
         const dndOrderedCards = arrayMove(oldClumn?.cards, oldCardIndex, newCardIndex)
 
+        const dndOrderedCardIds = dndOrderedCards.map(card => card._id)
         setOrderedColumns(prevColumns => {
 
           // Clone mảng orderedColumnsState cũ ra một mảng mới để xứ lý data rồi > return - cập nhật lại orderedColumnsState mới
@@ -225,11 +226,13 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMo
           // cập nhập lại 2 giá trị mới là card và cardOrderIds trong cái targetColumn
           // biến constant trong js có thể ghi đè khi đi vào 1 cấp dữ liệu
           targetColumn.cards = dndOrderedCards
-          targetColumn.cardOrderIds = dndOrderedCards.map(card => card._id)
+          targetColumn.cardOrderIds = dndOrderedCardIds
 
           // trả về giá trị state mới chuẩn vị trí
           return nextColumns
         })
+        // gọi lên props function nằm ở component cha xử lý
+        handelMoveCardInTheSameColumn(dndOrderedCards, dndOrderedCardIds, oldClumn._id)
       }
     }
 
@@ -243,10 +246,10 @@ function BoardContent({ board, handelAddNewColumn, handelcreateNewCard, handelMo
         const newColumnIndex = orderedColumns.findIndex(c => c._id === over.id)
         // dùng array move của thằng dnd-kit để sắp xếp lại mảng columns ban đầu
         const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
-        //gọi lên props function handelMoveColumn nằm ở component cha cao nhất
-        handelMoveColumn(dndOrderedColumns)
         // vẫn gọi set state ở đây để tránh delay hoặc fickering giao diện lúc kéo thả
         setOrderedColumns(dndOrderedColumns)
+        //gọi lên props function handelMoveColumn nằm ở component cha cao nhất
+        handelMoveColumn(dndOrderedColumns)
       }
     }
 
