@@ -18,7 +18,6 @@ import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ListCards from './ListCards/ListCards'
-import { mapOrder } from '~/utils/sort'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
@@ -41,7 +40,7 @@ function Cloumn({ column, handelcreateNewCard }) {
     opacity: isDragging ? 0.5 : undefined
   }
 
-  const oderedCard = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const oderedCard = column.cards
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
   const toggleOpenNewCardForm = () => {

@@ -15,13 +15,13 @@ function ListColumns({ columns, handelAddNewColumn, handelcreateNewCard }) {
     setOpenNewColumnForm(!openNewColumnForm)
   }
 
-  const addNewColumn = async() => {
+  const addNewColumn = () => {
     if (!newColumnTitle) {
       toast.error('please enter column title!')
       return
     }
 
-    await handelAddNewColumn(newColumnTitle)
+    handelAddNewColumn(newColumnTitle)
     // gọi api
     //đóng trạng thái input & clear input
     toggleOpenNewColumnForm()
