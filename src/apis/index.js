@@ -3,12 +3,16 @@ import { API_ROOT } from '~/utils/constant'
 
 /** Board */
 export const fetchBoardDetailsAPI = async(boardID) => {
-  const request = await axios.get(`${API_ROOT}/v1/boards/${boardID}`)
-  return request.data
+  const response = await axios.get(`${API_ROOT}/v1/boards/${boardID}`)
+  return response.data
 }
 export const updateBoardDetailsAPI = async(boardID, updateData) => {
-  const request = await axios.put(`${API_ROOT}/v1/boards/${boardID}`, updateData)
-  return request.data
+  const response = await axios.put(`${API_ROOT}/v1/boards/${boardID}`, updateData)
+  return response.data
+}
+export const moveCardToDifferentColumnAPI = async( updateData) => {
+  const response = await axios.put(`${API_ROOT}/v1/boards/supports/moving_card`, updateData)
+  return response.data
 }
 /** Columns */
 export const createNewColumAPI = async(newColumData) => {
@@ -16,8 +20,8 @@ export const createNewColumAPI = async(newColumData) => {
   return response.data
 }
 export const updateColumnDetailsAPI = async(columnId, updateData) => {
-  const request = await axios.put(`${API_ROOT}/v1/columns/${columnId}`, updateData)
-  return request.data
+  const response = await axios.put(`${API_ROOT}/v1/columns/${columnId}`, updateData)
+  return response.data
 }
 
 /** Cards */
