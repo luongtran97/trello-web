@@ -63,10 +63,19 @@ function Board() {
       boardId:board._id
     })
     const newBoard = { ...board }
-    const columnTuUpdate = newBoard.columns.find(column => column._id === createdCard.columnId )
-    if (columnTuUpdate) {
-      columnTuUpdate.cards.push(createdCard)
-      columnTuUpdate.cardOrderIds.push(createdCard._id)
+    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId )
+    if (columnToUpdate) {
+      columnToUpdate.cards.push(createdCard)
+      columnToUpdate.cardOrderIds.push(createdCard._id)
+      // // nếu column rỗng bản chất thì đang chứa một cái placeholder card
+      // // method some kiểm tra dữ liệu trong 1 mảng trả về true, false giống như vòng lập nhưng khi thỏa điều kiện thì nó dừng
+      // if (columnToUpdate.cards.some(card => card.Fe_PlaceholderCard)) {
+      //   columnToUpdate.cards = [createdCard]
+      //   columnToUpdate.cardOrderIds = [createdCard._id]
+      // } else {
+      //   columnToUpdate.cards.push(createdCard)
+      //   columnToUpdate.cardOrderIds.push(createdCard._id)
+      // }
     }
     setBoard(newBoard)
   }
@@ -75,13 +84,13 @@ function Board() {
   const handelMoveColumn = (dndOrderedColumns) => {
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
     const newBoard = { ...board }
-    newBoard.columns = dndOrderedColumnsIds
+    newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
     // setBoard(newBoard)
     updateBoardDetailsAPI(board._id, {
       columnOrderIds: newBoard.columnOrderIds
     })
-    // setBoard(newBoard)
+    setBoard(newBoard)
 
   }
 
@@ -109,14 +118,17 @@ function Board() {
   const handelMoveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
     const newBoard = { ...board }
-    newBoard.columns = dndOrderedColumnsIds
+    newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
-    // setBoard(newBoard)
+    setBoard(newBoard)
     // gọi API xử lý backend
+    let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
+    // xử lý vấn đề khi kéo card cuối cùng ra khỏi column, column rỗng sẽ có placeholder card, cần xóa nó đi
+    if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
     moveCardToDifferentColumnAPI({
       currentCardId,
       prevColumnId,
-      prevCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds,
+      prevCardOrderIds,
       nextColumnId,
       nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
     })
