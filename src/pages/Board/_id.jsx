@@ -67,17 +67,15 @@ function Board() {
     const newBoard = { ...board }
     const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId )
     if (columnToUpdate) {
-      columnToUpdate.cards.push(createdCard)
-      columnToUpdate.cardOrderIds.push(createdCard._id)
       // // nếu column rỗng bản chất thì đang chứa một cái placeholder card
       // // method some kiểm tra dữ liệu trong 1 mảng trả về true, false giống như vòng lập nhưng khi thỏa điều kiện thì nó dừng
-      // if (columnToUpdate.cards.some(card => card.Fe_PlaceholderCard)) {
-      //   columnToUpdate.cards = [createdCard]
-      //   columnToUpdate.cardOrderIds = [createdCard._id]
-      // } else {
-      //   columnToUpdate.cards.push(createdCard)
-      //   columnToUpdate.cardOrderIds.push(createdCard._id)
-      // }
+      if (columnToUpdate.cards.some(card => card.Fe_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
     }
     setBoard(newBoard)
   }
