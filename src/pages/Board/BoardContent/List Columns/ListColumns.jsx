@@ -8,7 +8,7 @@ import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortabl
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
-function ListColumns({ columns, handelAddNewColumn, handelcreateNewCard }) {
+function ListColumns({ columns, handelAddNewColumn, handelcreateNewCard, deleteColumnDetails }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState('')
   const toggleOpenNewColumnForm = () => {
@@ -41,7 +41,7 @@ function ListColumns({ columns, handelAddNewColumn, handelcreateNewCard }) {
         }
       }}>
         {/* box columns */}
-        {columns?.map(column => (<Cloumn column={column} key={column._id} handelcreateNewCard={handelcreateNewCard}/>))}
+        {columns?.map(column => (<Cloumn column={column} key={column._id} handelcreateNewCard={handelcreateNewCard} deleteColumnDetails={deleteColumnDetails} />))}
         {/* box add new column */}
         {!openNewColumnForm
           ? <Box onClick={toggleOpenNewColumnForm} sx={{
@@ -81,7 +81,7 @@ function ListColumns({ columns, handelAddNewColumn, handelcreateNewCard }) {
               size='small'
               type="text"
               variant='outlined'
-              autoFocu
+              autoFocus
               value={newColumnTitle}
               onChange={(e) =>
                 setNewColumnTitle(e.target.value)

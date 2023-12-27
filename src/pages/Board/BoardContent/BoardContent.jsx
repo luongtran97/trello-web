@@ -29,7 +29,8 @@ function BoardContent({
   handelcreateNewCard,
   handelMoveColumn,
   handelMoveCardInTheSameColumn,
-  handelMoveCardToDifferentColumn
+  handelMoveCardToDifferentColumn,
+  deleteColumnDetails
 }) {
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint:{ distance:10 } })
   const mouseSensor = useSensor(MouseSensor, { activationConstraint:{ distance:10 } })
@@ -332,6 +333,7 @@ function BoardContent({
           columns={orderedColumns}
           handelAddNewColumn={handelAddNewColumn}
           handelcreateNewCard={handelcreateNewCard}
+          deleteColumnDetails= {deleteColumnDetails}
         />
         <DragOverlay dropAnimation={{
           duration: 500,

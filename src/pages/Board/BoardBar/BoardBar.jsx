@@ -117,7 +117,7 @@ function BoardBar({ board }) {
             <Tooltip title='LuongTranDev'>
               <Avatar
                 alt="LuongTranDev"
-                src="https://scontent.fsgn21-1.fna.fbcdn.net/v/t39.30808-6/283373885_1887558088104590_4004774488592908700_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_ohc=TOzU88zqEdsAX9hetLT&_nc_ht=scontent.fsgn21-1.fna&oh=00_AfB2nLt8P3239eTRw0vRUw7iCD4xMnb6uP_gb1-g9GI_WA&oe=65699D01" />
+                src="https://scontent.fsgn21-1.fna.fbcdn.net/v/t39.30808-6/283373885_1887558088104590_4004774488592908700_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=sX7zv9Z1ircAX9Pf6XC&_nc_ht=scontent.fsgn21-1.fna&oh=00_AfDaItwrb0bE3hGLRhOQSOqYXG1ktaPfZLnr2qWlrPPWdQ&oe=65912A01" />
             </Tooltip>
           </AvatarGroup>
         </Box>

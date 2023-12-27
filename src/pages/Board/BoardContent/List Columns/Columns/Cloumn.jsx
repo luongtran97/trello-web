@@ -22,7 +22,9 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
-function Cloumn({ column, handelcreateNewCard }) {
+import { useConfirm } from 'material-ui-confirm'
+function Cloumn({ column, handelcreateNewCard, deleteColumnDetails }) {
+  const confirmDeleteColumn = useConfirm()
   const {
     attributes,
     listeners,
@@ -31,7 +33,6 @@ function Cloumn({ column, handelcreateNewCard }) {
     transition,
     isDragging
   } = useSortable({ id: column._id, data: { ...column } })
-
   const dndKitCardStyle = {
     // touchAction:'none', //dành cho sensor dạng default
     transform: CSS.Translate.toString(transform),
@@ -39,7 +40,6 @@ function Cloumn({ column, handelcreateNewCard }) {
     height:'100%',
     opacity: isDragging ? 0.5 : undefined
   }
-
   const oderedCard = column.cards
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
@@ -71,6 +71,18 @@ function Cloumn({ column, handelcreateNewCard }) {
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+  // xử lý xóa 1 column và cards bên trong nó
+  const handelDeleteColumn = () => {
+    confirmDeleteColumn({
+      title:'Delete Column?',
+      description: 'This action will permanently your Column and its Cards! Are you sure?'
+    })
+      .then(() => {
+        deleteColumnDetails(column._id)
+      })
+      .catch(() => {
+      })
   }
   return (
     <div
@@ -122,12 +134,20 @@ function Cloumn({ column, handelcreateNewCard }) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-column-dropdown'
               }}
             >
-              <MenuItem>
-                <ListItemIcon><AddCardIcon fontSize="small" /></ListItemIcon>
+              <MenuItem
+                onClick={toggleOpenNewCardForm}
+                sx={{
+                  '&:hover':{
+                    color:'success.light',
+                    '& .addCardIcon': { color:'success.light' }
+                  }
+                }}>
+                <ListItemIcon><AddCardIcon className='addCardIcon' fontSize="small" /></ListItemIcon>
                 <ListItemText>Add New Card</ListItemText>
               </MenuItem>
               <MenuItem>
@@ -143,9 +163,16 @@ function Cloumn({ column, handelcreateNewCard }) {
                 <ListItemText>Paste</ListItemText>
               </MenuItem>
               <Divider />
-              <MenuItem>
-                <ListItemIcon><DeleteForeverIcon fontSize="small" /></ListItemIcon>
-                <ListItemText>Remove this column</ListItemText>
+              <MenuItem
+                onClick={handelDeleteColumn}
+                sx={{
+                  '&:hover':{
+                    color:'warning.dark',
+                    '& .deleteForeverIcon': { color:'warning.dark' }
+                  }
+                }}>
+                <ListItemIcon><DeleteForeverIcon className='deleteForeverIcon' fontSize="small" /></ListItemIcon>
+                <ListItemText>Delete this column</ListItemText>
               </MenuItem>
               <MenuItem>
                 <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
@@ -189,7 +216,7 @@ function Cloumn({ column, handelcreateNewCard }) {
                 type="text"
                 data-no-dnd='true'
                 variant='outlined'
-                autoFocu
+                autoFocus
                 value={newCardTitle}
                 onChange={(e) =>
                   setNewCardTitle(e.target.value)
