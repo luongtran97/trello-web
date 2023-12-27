@@ -7,6 +7,7 @@ import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 // import { mockData } from '~/apis/moc-data'
 import { fetchBoardDetailsAPI } from '~/apis'
+import { toast } from 'react-toastify'
 import { mapOrder } from '~/utils/sort'
 import CircularProgress from '@mui/material/CircularProgress'
 import {
@@ -14,7 +15,8 @@ import {
   createNewCardAPI,
   updateBoardDetailsAPI,
   updateColumnDetailsAPI,
-  moveCardToDifferentColumnAPI
+  moveCardToDifferentColumnAPI,
+  deleteColumnDetailsAPI
 } from '~/apis'
 import { generatePlaceHolderCard } from '~/utils/formatters'
 import Typography from '@mui/material/Typography'
@@ -134,6 +136,17 @@ function Board() {
     })
   }
 
+  const deleteColumnDetails = (columnId) => {
+    //update cho chuẩn dữ liệu state board
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter(c => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
+    setBoard(newBoard)
+    //gọi api xử lý BE
+    deleteColumnDetailsAPI(columnId).then((res) => {
+      toast.success(res?.deleteResult)
+    })
+  }
   if ( !board ) {
     return (
       <Box sx={{
@@ -161,6 +174,7 @@ function Board() {
         handelMoveColumn={handelMoveColumn}
         handelMoveCardInTheSameColumn={handelMoveCardInTheSameColumn}
         handelMoveCardToDifferentColumn= {handelMoveCardToDifferentColumn}
+        deleteColumnDetails= {deleteColumnDetails}
       />
     </Container>
   )
